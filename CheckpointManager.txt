@@ -1,0 +1,38 @@
+using UnityEngine;
+
+public class CheckpointManager : MonoBehaviour
+{
+    public Transform[] checkpoints;
+    private int currentCheckpointIndex = 0;
+
+    public void ResetCheckpoints()
+    {
+        currentCheckpointIndex = 0;
+    }
+
+    public Vector3 GetNextCheckpointPosition()
+    {
+        if (currentCheckpointIndex < checkpoints.Length)
+        {
+            return checkpoints[currentCheckpointIndex].position;
+        }
+        return Vector3.zero; // Fallback
+    }
+
+    public void NextCheckpoint()
+    {
+        currentCheckpointIndex++;
+        if (currentCheckpointIndex >= checkpoints.Length)
+        {
+            FindObjectOfType<CarAgent>().GoalReached();
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && other.transform.position == checkpoints[currentCheckpointIndex].position)
+        {
+            FindObjectOfType<CarAgent>().CheckpointReached();
+        }
+    }
+}
